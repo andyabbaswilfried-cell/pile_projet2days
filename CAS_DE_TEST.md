@@ -22,9 +22,9 @@ go test ./...
 | Valeurs toutes distinctes | `1 2 3` | valide |
 | Valeurs répétées | `1 2 1` | invalide |
 
-Le programme `push-swap` documente actuellement la prise en charge des valeurs
-non négatives dans `README.md`; la validation entière seule n'est donc pas une
-garantie de prise en charge par l'algorithme pour les nombres négatifs.
+Le programme `push-swap` décale les valeurs négatives à partir du minimum avant
+le tri. Les valeurs proches des limites du type `int` peuvent dépasser sa
+capacité pendant ce calcul et ne sont pas garanties.
 
 ## Opérations sur les piles
 
