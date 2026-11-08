@@ -21,8 +21,8 @@ func TestChiffre(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		if got := Chiffre(tt.carte, tt.tour); got != tt.want {
-			t.Errorf("Chiffre(%d, %d) = %d, want %d", tt.carte, tt.tour, got, tt.want)
+		if got := chiffre(tt.carte, tt.tour); got != tt.want {
+			t.Errorf("chiffre(%d, %d) = %d, want %d", tt.carte, tt.tour, got, tt.want)
 		}
 	}
 }
@@ -42,8 +42,8 @@ func TestIntegerToBinary(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IntegerToBinary(tt.nums); got != tt.want {
-				t.Errorf("IntegerToBinary(%v) = %d, want %d", tt.nums, got, tt.want)
+			if got := nbrOfBits(tt.nums); got != tt.want {
+				t.Errorf("nbrOfBits(%v) = %d, want %d", tt.nums, got, tt.want)
 			}
 		})
 	}
@@ -64,7 +64,7 @@ func TestAlgoTrier(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			moves := algo_Trier(append([]int(nil), tt.pile...), nil)
+			moves := algoTrier(append([]int(nil), tt.pile...), nil)
 			pileA := append([]int(nil), tt.pile...)
 			var pileB []int
 			for _, move := range moves {

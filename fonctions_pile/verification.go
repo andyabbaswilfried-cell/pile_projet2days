@@ -1,45 +1,46 @@
 package fonctions_pile
 
-import "fmt"
 import "strconv"
 
-func Are_all_nbrs(pile []string) bool {
+// AreAllNbrs indique si chaque argument peut être converti en int.
+func AreAllNbrs(pile []string) bool {
 	res := true
 	for _, r := range pile {
 		_, err := strconv.Atoi(r)
 		if err != nil {
-			fmt.Println("cette pile n'est pas composé uniquement de chiffres", pile)
 			res = false
+			return res
 		}
 	}
 	return res
 }
 
-func No_doublons(pile []string) bool {
+// NoDoublons indique si aucune valeur textuelle n'apparaît deux fois.
+func NoDoublons(pile []string) bool {
 	res := true
 	for i := 0; i < len(pile); i++ {
 		for j := i + 1; j < len(pile); j++ {
 			if pile[i] == pile[j] {
-				fmt.Println("Malheureusement il y a un doublon")
 				res = false
+				return res
 			}
 		}
 	}
 	return res
 }
 
-func Sorted(pileA []int, pileB []int) ( bool) {
-	ok := true
+// Sorted vérifie que A est strictement croissante et que B est vide.
+func Sorted(pileA []int, pileB []int) bool {
 	if len(pileB) == 0 {
 		for i := 1; i < len(pileA); i++ {
-			if pileA[i-1] == pileA[i] || pileA[i-1] > pileA[i] {
-				ok = false
-				return  ok
+			if pileA[i-1] >= pileA[i] {
+
+				return false
 			}
 		}
 	} else {
-		ok = false
-		return ok
+
+		return false
 	}
-	return ok
+	return true
 }

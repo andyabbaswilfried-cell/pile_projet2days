@@ -10,67 +10,89 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("il manque des arguments, la liste est vide")
+		fmt.Fprintln(os.Stderr, "Error")
 		return
 	}
 	pile := strings.Fields(os.Args[1])
-	if fonctions_pile.Are_all_nbrs(pile) && fonctions_pile.No_doublons(pile) {
-		var pileA []int
-		var pileB []int
-		var moves []string
-		for _, r := range strings.Fields(os.Args[1]) {
-
-			value, err := strconv.Atoi(r)
-			if err != nil {
-				fmt.Println("la conversion échoue")
-				return
-			}
-			pileA = append(pileA, value)
-		}
-		moves = algo_Trier(pileA, pileB)
-		coups := strings.Join(moves, "\n")
-		fmt.Print(coups)
+	if !fonctions_pile.AreAllNbrs(pile) || !fonctions_pile.NoDoublons(pile) {
+		fmt.Fprintln(os.Stderr, "Error")
 		return
 	}
+	var pileA []int
+	var pileB []int
+	for _, r := range pile {
+		value, _ := strconv.Atoi(r)
+		pileA = append(pileA, value)
+	}
+	moves := algoTrier(pileA, pileB)
+	coups := strings.Join(moves, "\n")
+	fmt.Print(coups)
 }
 
-func algo_Trier(pileA []int, pileB []int) []string {
-	var instructions_à_faire []string
+func algoTrier(pileA []int, pileB []int) []string {
+	var instructionsToDo []string
 	if len(pileA) == 1 || len(pileA) == 0 {
 		return nil
 	} else if fonctions_pile.Sorted(pileA, pileB) {
 		return nil
 	} else {
+		min, positive := isMinimumPositive(pileA)
+		if !positive {
+			pileA = shiftAllNumbers(pileA, min)
+		}
 		n := len(pileA)
-		limit := IntegerToBinary(pileA)
-		for tour := 0; tour < limit; tour++ { // 7 chiffres binaires suffisent jusqu'à 99 (1100011)
+		limit := nbrOfBits(pileA)
+		// Le tri radix traite les bits de poids faible au plus fort.
+		for tour := 0; tour < limit; tour++ {
 			for k := 0; k < n; k++ {
-				// À toi : regarde le chiffre du tour de la carte du sommet de A.
-				// S'il vaut 0, pose la carte sur B ; sinon, fais-la descendre au fond de A.
-				if Chiffre(pileA[0], tour) == 0 {
-					instructions_à_faire = append(instructions_à_faire, "pb")
+				// Les zéros passent sur B ; les uns restent dans le même ordre sur A.
+				if chiffre(pileA[0], tour) == 0 {
+					instructionsToDo = append(instructionsToDo, "pb")
 					pileA, pileB = fonctions_pile.Pb(pileA, pileB)
 				} else {
-					instructions_à_faire = append(instructions_à_faire, "ra")
+					instructionsToDo = append(instructionsToDo, "ra")
 					pileA = fonctions_pile.Ra(pileA)
 				}
 			}
 			for len(pileB) > 0 {
-				instructions_à_faire = append(instructions_à_faire, "pa")
+				instructionsToDo = append(instructionsToDo, "pa")
 				pileA, pileB = fonctions_pile.Pa(pileA, pileB)
 			}
 		}
-		// À toi : ramène toutes les cartes de B sur A.
 	}
-	return instructions_à_faire
+	return instructionsToDo
 }
 
-// Chiffre renvoie le chiffre numéro tour de carte écrite en binaire, en partant
-// de la droite. 6 s'écrit 110 : Chiffre(6, 0) vaut 0, Chiffre(6, 1) vaut 1.
-func Chiffre(carte, tour int) int {
+// isMinimumPositive trouve le minimum et précise s'il est non négatif.
+func isMinimumPositive(pileA []int) (int, bool) {
+	min := pileA[0]
+	for n := 1; n < len(pileA); n++ {
+		if pileA[n] < min {
+			min = pileA[n]
+		}
+	}
+	if min < 0 {
+		return min, false
+	}
+	return min, true
+}
+
+// shiftAllNumbers décale les valeurs afin que le minimum devienne zéro.
+func shiftAllNumbers(pileA []int, min int) []int {
+	var pile []int
+	for _, r := range pileA {
+		pile = append(pile, r+-1*min)
+	}
+	return pile
+}
+
+// chiffre renvoie le bit numéro tour, en partant de la droite.
+func chiffre(carte, tour int) int {
 	return (carte >> tour) & 1
 }
-func IntegerToBinary(n []int) int {
+
+// nbrOfBits renvoie le nombre de bits nécessaires pour représenter la plus grande valeur.
+func nbrOfBits(n []int) int {
 	if len(n) == 0 {
 		return 0
 	}

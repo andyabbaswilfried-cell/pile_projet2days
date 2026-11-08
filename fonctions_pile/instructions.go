@@ -1,7 +1,10 @@
 package fonctions_pile
 
-func Instructions(nom string, pileA []int, pileB []int) ([]int, []int,bool) {
-	possible:= true
+// Instructions applique une instruction reconnue et indique si son nom est valide.
+// Les opérations impossibles sur des piles trop courtes restent des instructions valides
+// et ne modifient pas ces piles.
+func Instructions(nom string, pileA []int, pileB []int) ([]int, []int, bool) {
+	possible := true
 	switch nom {
 	case "pb":
 		pileA, pileB = Pb(pileA, pileB)
@@ -28,7 +31,7 @@ func Instructions(nom string, pileA []int, pileB []int) ([]int, []int,bool) {
 		pileA, pileB = Rrr(pileA, pileB)
 
 	default:
-		possible= false
+		possible = false
 	}
-	return pileA, pileB,possible
+	return pileA, pileB, possible
 }
